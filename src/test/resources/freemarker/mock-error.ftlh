@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>FreeMarker error page</title>
+</head>
+<body>
+    <h1>HTTP ${errorStatus} - ${errorPhrase}</h1>
+    <p>${errorMessage}</p>
+</body>
+</html>

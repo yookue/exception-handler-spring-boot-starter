@@ -1,0 +1,21 @@
+# Exception Handler for Spring Boot Starter
+# Copyright (c) 2023 Yookue Ltd. All rights reserved.
+# https://yookue.com
+
+
+spring:
+    thymeleaf:
+        enabled: false
+    freemarker:
+        enabled: false
+    groovy:
+        template:
+            enabled: true
+            resource-loader-path: 'classpath:/groovy/'
+            configuration:
+                auto-escape: true
+                auto-indent: true
+                auto-new-line: true
+                use-double-quotes: true
+    mustache:
+        enabled: false
