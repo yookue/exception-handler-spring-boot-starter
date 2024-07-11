@@ -113,7 +113,7 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
     }
 
     @Nonnull
-    @SuppressWarnings("ConstantConditions")
+    @SuppressWarnings("DataFlowIssue")
     private Map<String, Object> generateDefaultData(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause, boolean html) {
         Map<String, Object> result = new LinkedHashMap<>();
         Throwable rootCause = NestedExceptionUtils.getMostSpecificCause(cause);
