@@ -18,11 +18,11 @@ package com.yookue.springstarter.exceptionhandler.event;
 
 
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.ApplicationEvent;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import com.yookue.commonplexus.javaseutil.util.ObjectUtilsWraps;
 import lombok.Getter;
 
@@ -36,7 +36,7 @@ import lombok.Getter;
 @Getter
 @SuppressWarnings("unused")
 public class ServletExceptionHandledEvent extends ApplicationEvent {
-    private HttpStatus httpStatus;
+    private HttpStatusCode httpStatus;
     private Throwable exception;
     private Map<String, Object> errorAttributes;
 
@@ -51,7 +51,7 @@ public class ServletExceptionHandledEvent extends ApplicationEvent {
      * @param status the response http status
      * @param exception the exception that occurred
      */
-    public ServletExceptionHandledEvent(@Nonnull HttpServletRequest request, @Nonnull HttpStatus status, @Nullable Throwable exception) {
+    public ServletExceptionHandledEvent(@Nonnull HttpServletRequest request, @Nonnull HttpStatusCode status, @Nullable Throwable exception) {
         super(request);
         this.httpStatus = status;
         this.exception = exception;
@@ -65,7 +65,7 @@ public class ServletExceptionHandledEvent extends ApplicationEvent {
      * @param exception the exception that occurred
      * @param attributes the response error attributes
      */
-    public ServletExceptionHandledEvent(@Nonnull HttpServletRequest request, @Nonnull HttpStatus status, @Nullable Throwable exception, @Nullable Map<String, Object> attributes) {
+    public ServletExceptionHandledEvent(@Nonnull HttpServletRequest request, @Nonnull HttpStatusCode status, @Nullable Throwable exception, @Nullable Map<String, Object> attributes) {
         super(request);
         this.httpStatus = status;
         this.exception = exception;

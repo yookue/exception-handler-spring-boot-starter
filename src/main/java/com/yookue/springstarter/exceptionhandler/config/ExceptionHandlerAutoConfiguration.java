@@ -18,8 +18,8 @@ package com.yookue.springstarter.exceptionhandler.config;
 
 
 import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.servlet.Servlet;
+import jakarta.annotation.Nonnull;
+import jakarta.servlet.Servlet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -40,8 +40,7 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 import org.springframework.web.servlet.view.groovy.GroovyMarkupViewResolver;
-import org.springframework.web.servlet.view.tiles3.TilesViewResolver;
-import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 import com.yookue.commonplexus.javaseutil.util.CollectionPlainWraps;
 import com.yookue.commonplexus.javaseutil.util.MapPlainWraps;
 import com.yookue.springstarter.exceptionhandler.filter.FilterExceptionHandlerFilter;
@@ -53,7 +52,6 @@ import com.yookue.springstarter.exceptionhandler.resolver.GroovyFilterExceptionR
 import com.yookue.springstarter.exceptionhandler.resolver.InternalFilterExceptionResolver;
 import com.yookue.springstarter.exceptionhandler.resolver.MustacheFilterExceptionResolver;
 import com.yookue.springstarter.exceptionhandler.resolver.ThymeleafFilterExceptionResolver;
-import com.yookue.springstarter.exceptionhandler.resolver.TilesFilterExceptionResolver;
 
 
 /**
@@ -121,17 +119,6 @@ public class ExceptionHandlerAutoConfiguration {
         @ConditionalOnMissingBean(name = EXCEPTION_RESOLVER)
         public HandlerExceptionResolver mustacheFilterExceptionResolver(@Nonnull MustacheViewResolver resolver, @Nonnull ExceptionHandlerProperties properties) {
             AbstractFilterExceptionResolver result = new MustacheFilterExceptionResolver(resolver);
-            Optional.ofNullable(properties.getExceptionResolver().getResolverOrder()).ifPresent(result::setOrder);
-            return result;
-        }
-
-        @Bean(name = EXCEPTION_RESOLVER)
-        @ConditionalOnClass(name = "org.apache.tiles.startup.TilesInitializer")
-        @ConditionalOnBean(value = TilesViewResolver.class)
-        @ConditionalOnMissingBean(name = EXCEPTION_RESOLVER)
-        @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
-        public HandlerExceptionResolver tilesFilterExceptionResolver(@Nonnull TilesViewResolver resolver, @Nonnull ExceptionHandlerProperties properties) {
-            AbstractFilterExceptionResolver result = new TilesFilterExceptionResolver(resolver);
             Optional.ofNullable(properties.getExceptionResolver().getResolverOrder()).ifPresent(result::setOrder);
             return result;
         }

@@ -18,10 +18,10 @@ package com.yookue.springstarter.exceptionhandler.facade;
 
 
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatusCode;
 import com.yookue.springstarter.exceptionhandler.util.ErrorControllerUtils;
 
 
@@ -31,7 +31,7 @@ import com.yookue.springstarter.exceptionhandler.util.ErrorControllerUtils;
  * @author David Hsing
  * @see com.yookue.springstarter.exceptionhandler.controller.DefaultBasicErrorController
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "SameReturnValue"})
 public interface ErrorControllerCustomizer {
     /**
      * Returns the view name for template engine
@@ -42,7 +42,7 @@ public interface ErrorControllerCustomizer {
      *
      * @return the view name for template engine
      */
-    String prepareErrorView(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause);
+    String prepareErrorView(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause);
 
     /**
      * Returns the view data for a html request, or the rest data for an async request
@@ -58,12 +58,12 @@ public interface ErrorControllerCustomizer {
      *
      * @return the view data for a html request, or the rest data for an async request
      */
-    default Map<String, Object> prepareErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause, boolean html) {
+    default Map<String, Object> prepareErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause, boolean html) {
         return null;
     }
 
     /**
-     * Returns the determined {@link org.springframework.http.HttpStatus}
+     * Returns the determined {@link org.springframework.http.HttpStatusCode}
      * <p>
      * For converting status with {@link java.lang.Throwable}
      *
@@ -71,9 +71,9 @@ public interface ErrorControllerCustomizer {
      * @param status the http status that determined
      * @param cause the exception occurred, maybe {@code null} if http 404
      *
-     * @return the determined {@link org.springframework.http.HttpStatus}
+     * @return the determined {@link org.springframework.http.HttpStatusCode}
      */
-    default HttpStatus determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause) {
+    default HttpStatusCode determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause) {
         return ErrorControllerUtils.determineErrorStatus(request, status, cause);
     }
 
@@ -87,7 +87,7 @@ public interface ErrorControllerCustomizer {
      *
      * @return whether to use the default error data in the controller or not
      */
-    default boolean useDefaultErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause, boolean html) {
+    default boolean useDefaultErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause, boolean html) {
         return true;
     }
 
@@ -103,7 +103,7 @@ public interface ErrorControllerCustomizer {
      *
      * @return whether to use the localized field name in the controller or not
      */
-    default boolean useLocalizedFieldName(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause, boolean html) {
+    default boolean useLocalizedFieldName(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause, boolean html) {
         return false;
     }
 }

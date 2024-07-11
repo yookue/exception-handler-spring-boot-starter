@@ -17,7 +17,7 @@
 package com.yookue.springstarter.exceptionhandler.processor;
 
 
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
@@ -45,11 +45,10 @@ public class SimpleEventMulticasterProcessor implements BeanPostProcessor, Order
 
     @Override
     public Object postProcessAfterInitialization(@Nonnull Object bean, @Nonnull String beanName) throws BeansException {
-        if (bean instanceof SimpleApplicationEventMulticaster) {
-            SimpleApplicationEventMulticaster multicaster = (SimpleApplicationEventMulticaster) bean;
-            Object handler = ReflectionUtilsWraps.getField(SimpleApplicationEventMulticaster.class, "errorHandler", true, multicaster);    // $NON-NLS-1$
+        if (bean instanceof SimpleApplicationEventMulticaster instance) {
+            Object handler = ReflectionUtilsWraps.getField(SimpleApplicationEventMulticaster.class, "errorHandler", true, instance);    // $NON-NLS-1$
             if (handler == null) {
-                multicaster.setErrorHandler(errorHandler);
+                instance.setErrorHandler(errorHandler);
             }
         }
         return bean;

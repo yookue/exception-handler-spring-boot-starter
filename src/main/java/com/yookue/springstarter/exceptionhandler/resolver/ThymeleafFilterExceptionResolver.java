@@ -17,17 +17,17 @@
 package com.yookue.springstarter.exceptionhandler.resolver;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
-import org.thymeleaf.spring5.view.AbstractThymeleafView;
-import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import org.thymeleaf.spring6.view.AbstractThymeleafView;
+import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 import com.yookue.commonplexus.javaseutil.constant.AssertMessageConst;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -40,8 +40,8 @@ import lombok.SneakyThrows;
  *
  * @author David Hsing
  * @see org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration
- * @see org.thymeleaf.spring5.view.AbstractThymeleafView
- * @see org.thymeleaf.spring5.view.ThymeleafViewResolver
+ * @see org.thymeleaf.spring6.view.AbstractThymeleafView
+ * @see org.thymeleaf.spring6.view.ThymeleafViewResolver
  */
 @RequiredArgsConstructor
 @Getter(value = AccessLevel.PROTECTED)
@@ -51,7 +51,7 @@ public class ThymeleafFilterExceptionResolver extends DefaultFilterExceptionReso
     @Override
     @SneakyThrows
     protected void resolveHtmlInternal(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nullable Object handler, @Nonnull Exception cause, @Nullable ModelAndView view) {
-        HttpStatus status = super.determineErrorStatus(request, (view == null ? null : view.getStatus()), cause);
+        HttpStatusCode status = super.determineErrorStatus(request, (view == null ? null : view.getStatus()), cause);
         response.setStatus(status.value());
         if (view != null && StringUtils.isNotBlank(view.getViewName())) {
             AbstractThymeleafView resolvedView = (AbstractThymeleafView) viewResolver.resolveViewName(view.getViewName(), LocaleContextHolder.getLocale());

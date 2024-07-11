@@ -18,7 +18,7 @@ package com.yookue.springstarter.exceptionhandler.registrar;
 
 
 import java.lang.annotation.Annotation;
-import javax.annotation.Nonnull;
+import jakarta.annotation.Nonnull;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;

@@ -1,5 +1,0 @@
-# Exception Handler for Spring Boot Starter
-# Copyright (c) 2023 Yookue Ltd. All rights reserved.
-# https://yookue.com
-
-org.springframework.boot.autoconfigure.EnableAutoConfiguration = com.yookue.springstarter.exceptionhandler.config.ExceptionHandlerAutoConfiguration

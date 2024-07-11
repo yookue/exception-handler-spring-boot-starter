@@ -17,15 +17,15 @@
 package com.yookue.springstarter.exceptionhandler.resolver;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.web.servlet.view.MustacheView;
 import org.springframework.boot.web.servlet.view.MustacheViewResolver;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.util.Assert;
 import org.springframework.web.servlet.ModelAndView;
 import com.yookue.commonplexus.javaseutil.constant.AssertMessageConst;
@@ -51,7 +51,7 @@ public class MustacheFilterExceptionResolver extends DefaultFilterExceptionResol
     @Override
     @SneakyThrows
     protected void resolveHtmlInternal(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nullable Object handler, @Nonnull Exception cause, @Nullable ModelAndView view) {
-        HttpStatus status = super.determineErrorStatus(request, (view == null ? null : view.getStatus()), cause);
+        HttpStatusCode status = super.determineErrorStatus(request, (view == null ? null : view.getStatus()), cause);
         response.setStatus(status.value());
         if (view != null && StringUtils.isNotBlank(view.getViewName())) {
             MustacheView resolvedView = (MustacheView) viewResolver.resolveViewName(view.getViewName(), LocaleContextHolder.getLocale());

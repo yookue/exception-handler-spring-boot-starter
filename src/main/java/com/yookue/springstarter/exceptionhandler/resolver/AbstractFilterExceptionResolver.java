@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -67,7 +68,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Configurable(autowire = Autowire.BY_TYPE, dependencyCheck = true)
 @Slf4j
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "StringConcatenationArgumentToLogCall"})
 public abstract class AbstractFilterExceptionResolver extends AbstractHandlerExceptionResolver implements BeanFactoryAware, InitializingBean {
     @Autowired
     protected ServerProperties serverProperties;
@@ -170,8 +171,8 @@ public abstract class AbstractFilterExceptionResolver extends AbstractHandlerExc
     }
 
     @Nonnull
-    protected HttpStatus determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause) {
-        HttpStatus result = ErrorControllerUtils.determineErrorStatus(request, status, cause);
+    protected HttpStatusCode determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause) {
+        HttpStatusCode result = ErrorControllerUtils.determineErrorStatus(request, status, cause);
         if (errorControllerCustomizer != null) {
             result = errorControllerCustomizer.determineErrorStatus(request, result, cause);
         }

@@ -17,13 +17,13 @@
 package com.yookue.springstarter.exceptionhandler.controller;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.boot.autoconfigure.web.ErrorProperties;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.util.Assert;
 import com.yookue.commonplexus.javaseutil.constant.AssertMessageConst;
 import lombok.Getter;
@@ -38,6 +38,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@SuppressWarnings("unused")
 public class SimpleBasicErrorController extends DefaultBasicErrorController {
     private String viewName;
     private boolean useLocalizedFieldName;
@@ -63,13 +64,13 @@ public class SimpleBasicErrorController extends DefaultBasicErrorController {
     }
 
     @Override
-    protected String prepareErrorView(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause) {
+    protected String prepareErrorView(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause) {
         Assert.hasText(viewName, AssertMessageConst.HAS_TEXT);
         return viewName;
     }
 
     @Override
-    protected boolean useLocalizedFieldName(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause, boolean html) {
+    protected boolean useLocalizedFieldName(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause, boolean html) {
         return useLocalizedFieldName;
     }
 }

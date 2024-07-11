@@ -18,12 +18,13 @@ package com.yookue.springstarter.exceptionhandler.util;
 
 
 import java.security.GeneralSecurityException;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ValidationException;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ValidationException;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.BindException;
 import com.yookue.commonplexus.javaseutil.exception.LawProhibitedException;
 import com.yookue.commonplexus.javaseutil.exception.MaliciousAccessException;
@@ -45,7 +46,7 @@ import com.yookue.springstarter.exceptionhandler.filter.FilterExceptionHandlerFi
  */
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted", "UnusedReturnValue"})
 public abstract class ErrorControllerUtils {
-    public static HttpStatus determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause) {
+    public static HttpStatusCode determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause) {
         Throwable rootCause;
         if (cause == null) {
             rootCause = WebUtilsWraps.getRequestAttributeAs(request, FilterExceptionHandlerFilter.THROWABLE_ATTRIBUTE, Throwable.class);

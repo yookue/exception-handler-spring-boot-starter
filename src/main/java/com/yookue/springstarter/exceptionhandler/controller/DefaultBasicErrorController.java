@@ -21,10 +21,10 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ValidationException;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -37,6 +37,7 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
@@ -63,7 +64,7 @@ import lombok.Getter;
  */
 @Configurable(autowire = Autowire.BY_TYPE, dependencyCheck = true)
 @Getter(value = AccessLevel.PROTECTED)
-@SuppressWarnings({"SameParameterValue", "SpringJavaAutowiredFieldsWarningInspection"})
+@SuppressWarnings({"unused", "SameParameterValue"})
 public class DefaultBasicErrorController extends AbstractBasicErrorController {
     private static final String NO_MESSAGE_AVAILABLE = "No message available";    // $NON-NLS-1$
 
@@ -79,12 +80,12 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
     }
 
     @Override
-    protected String prepareErrorView(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause) {
+    protected String prepareErrorView(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause) {
         return errorControllerCustomizer == null ? null : errorControllerCustomizer.prepareErrorView(request, status, cause);
     }
 
     @Override
-    protected Map<String, Object> prepareErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause, boolean html) {
+    protected Map<String, Object> prepareErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause, boolean html) {
         Map<String, Object> result = new LinkedHashMap<>();
         if (useDefaultErrorData(request, status, cause, html)) {
             result.putAll(generateDefaultData(request, status, cause, html));
@@ -96,24 +97,24 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
     }
 
     @Override
-    protected HttpStatus determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause) {
+    protected HttpStatusCode determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause) {
         if (errorControllerCustomizer != null) {
             return errorControllerCustomizer.determineErrorStatus(request, status, cause);
         }
         return ErrorControllerUtils.determineErrorStatus(request, status, cause);
     }
 
-    protected boolean useDefaultErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause, boolean html) {
+    protected boolean useDefaultErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause, boolean html) {
         return errorControllerCustomizer == null || errorControllerCustomizer.useDefaultErrorData(request, status, cause, html);
     }
 
-    protected boolean useLocalizedFieldName(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause, boolean html) {
+    protected boolean useLocalizedFieldName(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause, boolean html) {
         return errorControllerCustomizer != null && errorControllerCustomizer.useLocalizedFieldName(request, status, cause, html);
     }
 
     @Nonnull
     @SuppressWarnings("ConstantConditions")
-    private Map<String, Object> generateDefaultData(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause, boolean html) {
+    private Map<String, Object> generateDefaultData(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause, boolean html) {
         Map<String, Object> result = new LinkedHashMap<>();
         Throwable rootCause = NestedExceptionUtils.getMostSpecificCause(cause);
         ErrorAttributeOptions options = super.getErrorAttributeOptions(request, html ? MediaType.TEXT_HTML : MediaType.ALL);
@@ -121,7 +122,8 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
         Date timestamp = MapPlainWraps.getUtilDate(attributes, ErrorAttributeConst.TIMESTAMP, UtilDateWraps.getCurrentDateTime());
         result.put(html ? ResponseBodyConst.HTML_STATUS : ResponseBodyConst.REST_STATUS, status.value());
         if (html) {
-            String phrase = MessageSourceWraps.getMessageLookup(super.messageSource, "HttpStatus." + status.value(), null, status.getReasonPhrase(), LocaleContextHolder.getLocale());    // $NON-NLS-1$
+            String reason = (status instanceof HttpStatus instance) ? instance.getReasonPhrase() : null;
+            String phrase = MessageSourceWraps.getMessageLookup(super.messageSource, "HttpStatus." + status.value(), null, reason, LocaleContextHolder.getLocale());    // $NON-NLS-1$
             result.put(ResponseBodyConst.HTML_PHRASE, phrase);
         }
         String rootMessage = null;

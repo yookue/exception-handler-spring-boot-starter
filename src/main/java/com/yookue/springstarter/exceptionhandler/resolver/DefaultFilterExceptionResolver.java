@@ -17,12 +17,12 @@
 package com.yookue.springstarter.exceptionhandler.resolver;
 
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import com.yookue.commonplexus.springutil.util.JsonParserWraps;
@@ -42,7 +42,7 @@ public abstract class DefaultFilterExceptionResolver extends AbstractFilterExcep
     @Override
     @SneakyThrows
     protected void resolveRestInternal(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nullable Object handler, @Nonnull Exception cause, @Nullable ResponseEntity<?> entity) {
-        HttpStatus status = determineErrorStatus(request, (entity == null ? null : entity.getStatusCode()), cause);
+        HttpStatusCode status = determineErrorStatus(request, (entity == null ? null : entity.getStatusCode()), cause);
         if (entity != null) {
             String text = JsonParserWraps.toJsonString(entity.getBody(), super.beanFactory);
             if (StringUtils.isNotEmpty(text)) {

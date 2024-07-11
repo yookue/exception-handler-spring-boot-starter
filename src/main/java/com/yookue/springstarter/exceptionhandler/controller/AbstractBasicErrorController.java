@@ -18,10 +18,10 @@ package com.yookue.springstarter.exceptionhandler.controller;
 
 
 import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +39,7 @@ import org.springframework.context.MessageSourceAware;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ClassUtils;
@@ -75,20 +76,14 @@ import lombok.extern.slf4j.Slf4j;
  * @see org.springframework.boot.web.servlet.error.DefaultErrorAttributes
  */
 @Slf4j
-@SuppressWarnings({"JavadocDeclaration", "JavadocLinkAsPlainText"})
+@Setter
+@SuppressWarnings({"unused", "JavadocDeclaration", "JavadocLinkAsPlainText"})
 public abstract class AbstractBasicErrorController extends BasicErrorController implements ApplicationEventPublisherAware, EnvironmentAware, MessageSourceAware, InitializingBean {
     private static final String THYMELEAF_PROPERTIES = "spring.thymeleaf.servlet.produce-partial-output-while-processing";    // $NON-NLS-1$
 
-    @Setter
     protected boolean publishEvent = true;
-
-    @Setter
     protected ApplicationEventPublisher applicationEventPublisher;
-
-    @Setter
     protected Environment environment;
-
-    @Setter
     protected MessageSource messageSource;
 
     public AbstractBasicErrorController(@Nonnull ErrorAttributes attributes, @Nonnull ErrorProperties properties) {
@@ -114,7 +109,7 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
     @Override
     public ModelAndView errorHtml(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response) {
         Throwable cause = determineErrorCause(request);
-        HttpStatus status = determineErrorStatus(request, super.getStatus(request), cause);
+        HttpStatusCode status = determineErrorStatus(request, super.getStatus(request), cause);
         handleErrorBehavior(request, response, status, cause, true);
         return new ModelAndView(prepareErrorView(request, status, cause), prepareErrorData(request, status, cause, true));
     }
@@ -127,7 +122,7 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
     @Override
     public ResponseEntity<Map<String, Object>> error(@Nonnull HttpServletRequest request) {
         Throwable cause = determineErrorCause(request);
-        HttpStatus status = determineErrorStatus(request, super.getStatus(request), cause);
+        HttpStatusCode status = determineErrorStatus(request, super.getStatus(request), cause);
         handleErrorBehavior(request, null, status, cause, false);
         return (status == HttpStatus.NO_CONTENT) ? new ResponseEntity<>(status) : new ResponseEntity<>(prepareErrorData(request, status, cause, false), status);
     }
@@ -141,7 +136,7 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
      *
      * @return the view name for template engine
      */
-    protected abstract String prepareErrorView(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nonnull Throwable cause);
+    protected abstract String prepareErrorView(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nonnull Throwable cause);
 
     /**
      * Returns the view data for a html request, or the rest data for an async request
@@ -153,7 +148,7 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
      *
      * @return the view data for a html request, or the rest data for an async request
      */
-    protected abstract Map<String, Object> prepareErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nonnull Throwable cause, boolean html);
+    protected abstract Map<String, Object> prepareErrorData(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nonnull Throwable cause, boolean html);
 
     /**
      * Returns the determined {@link java.lang.Throwable} of the given request
@@ -171,7 +166,7 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
     }
 
     /**
-     * Returns the determined {@link org.springframework.http.HttpStatus} of the given request
+     * Returns the determined {@link org.springframework.http.HttpStatusCode} of the given request
      * <p>
      * For converting status with {@link java.lang.Throwable}
      *
@@ -179,9 +174,9 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
      * @param status the http status that determined
      * @param cause the exception occurred, maybe {@code null} if http 404
      *
-     * @return the determined {@link org.springframework.http.HttpStatus} of the given request
+     * @return the determined {@link org.springframework.http.HttpStatusCode} of the given request
      */
-    protected HttpStatus determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatus status, @Nullable Throwable cause) {
+    protected HttpStatusCode determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause) {
         return ErrorControllerUtils.determineErrorStatus(request, status, cause);
     }
 
@@ -207,19 +202,19 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
         if (MapPlainWraps.containsKeyValue(result, ErrorAttributeConst.STATUS, 999)) {
             // Response status node
             Throwable cause = determineErrorCause(request);
-            HttpStatus status = ObjectUtils.defaultIfNull(determineErrorStatus(request, super.getStatus(request), cause), HttpStatus.INTERNAL_SERVER_ERROR);
+            HttpStatusCode status = ObjectUtils.defaultIfNull(determineErrorStatus(request, super.getStatus(request), cause), HttpStatus.INTERNAL_SERVER_ERROR);
             result.put(ErrorAttributeConst.STATUS, status.value());
             // Response error node
             String error = MapPlainWraps.getString(result, ErrorAttributeConst.ERROR);
             if (StringUtils.isBlank(error) || StringUtils.equalsIgnoreCase(error, StringVariantConst.NONE)) {
-                result.put(ErrorAttributeConst.ERROR, status.getReasonPhrase());
+                result.put(ErrorAttributeConst.ERROR, (status instanceof HttpStatus instance) ? instance.getReasonPhrase() : null);
             }
         }
         return result;
     }
 
-    private void handleErrorBehavior(@Nonnull HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable HttpStatus status, @Nonnull Throwable cause, boolean html) {
-        HttpStatus httpStatus = (status != null) ? status : HttpStatus.INTERNAL_SERVER_ERROR;
+    private void handleErrorBehavior(@Nonnull HttpServletRequest request, @Nullable HttpServletResponse response, @Nullable HttpStatusCode status, @Nonnull Throwable cause, boolean html) {
+        HttpStatusCode httpStatus = (status != null) ? status : HttpStatus.INTERNAL_SERVER_ERROR;
         if (publishEvent) {
             Map<String, Object> errors = getErrorAttributes(request, ErrorAttributeCombo.ALL_OPTIONS);
             applicationEventPublisher.publishEvent(new ServletExceptionHandledEvent(request, httpStatus, cause, errors));
@@ -236,7 +231,7 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
             }
             String reason = MapPlainWraps.getString(attributes, ErrorAttributeConst.ERROR);
             if (StringUtils.isBlank(reason) || StringUtils.equalsIgnoreCase(reason, StringVariantConst.NONE)) {
-                reason = httpStatus.getReasonPhrase();
+                reason = (httpStatus instanceof HttpStatus instance) ? instance.getReasonPhrase() : null;
             }
             log.error("Error {} path '{}', status {}, reason: {}", request.getMethod(), path, httpStatus.value(), reason);
         }
