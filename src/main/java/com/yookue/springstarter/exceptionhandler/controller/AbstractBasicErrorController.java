@@ -117,7 +117,8 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
     /**
      * Processes the ajax request
      * <p>
-     * Probably &#64;RequestMapping(method = {RequestMethod.HEAD, RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.TRACE})
+     * Probably:
+     * <code>&#64;RequestMapping(method = {RequestMethod.HEAD, RequestMethod.POST, RequestMethod.PUT, RequestMethod.PATCH, RequestMethod.DELETE, RequestMethod.OPTIONS, RequestMethod.TRACE})</code>
      */
     @Override
     public ResponseEntity<Map<String, Object>> error(@Nonnull HttpServletRequest request) {
