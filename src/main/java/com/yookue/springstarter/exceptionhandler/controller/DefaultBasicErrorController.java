@@ -17,7 +17,7 @@
 package com.yookue.springstarter.exceptionhandler.controller;
 
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +43,7 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import com.yookue.commonplexus.javaseutil.exception.MaliciousAccessException;
 import com.yookue.commonplexus.javaseutil.structure.PureTextStruct;
+import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
 import com.yookue.commonplexus.javaseutil.util.MapPlainWraps;
 import com.yookue.commonplexus.javaseutil.util.UtilDateWraps;
 import com.yookue.commonplexus.springutil.constant.ErrorAttributeConst;
@@ -119,7 +120,8 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
         Throwable rootCause = NestedExceptionUtils.getMostSpecificCause(cause);
         ErrorAttributeOptions options = super.getErrorAttributeOptions(request, html ? MediaType.TEXT_HTML : MediaType.ALL);
         Map<String, Object> attributes = super.getErrorAttributes(request, options);
-        Date timestamp = MapPlainWraps.getUtilDate(attributes, ErrorAttributeConst.TIMESTAMP, UtilDateWraps.getCurrentDateTime());
+        // @see org.springframework.boot.web.servlet.error.DefaultErrorAttributes#getErrorAttributes
+        LocalDateTime timestamp = LocalDateWraps.fromUtilDateTime(MapPlainWraps.getUtilDate(attributes, ErrorAttributeConst.TIMESTAMP, UtilDateWraps.getCurrentDateTime()));
         result.put(html ? ResponseBodyConst.HTML_STATUS : ResponseBodyConst.REST_STATUS, status.value());
         if (html) {
             String reason = (status instanceof HttpStatus instance) ? instance.getReasonPhrase() : null;
