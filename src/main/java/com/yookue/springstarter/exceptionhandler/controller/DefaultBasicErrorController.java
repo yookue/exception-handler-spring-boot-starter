@@ -41,6 +41,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import com.yookue.commonplexus.javaseutil.constant.CharVariantConst;
 import com.yookue.commonplexus.javaseutil.exception.MaliciousAccessException;
 import com.yookue.commonplexus.javaseutil.structure.PureTextStruct;
 import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
@@ -121,7 +122,7 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
         ErrorAttributeOptions options = super.getErrorAttributeOptions(request, html ? MediaType.TEXT_HTML : MediaType.ALL);
         Map<String, Object> attributes = super.getErrorAttributes(request, options);
         // @see org.springframework.boot.web.servlet.error.DefaultErrorAttributes#getErrorAttributes
-        LocalDateTime timestamp = LocalDateWraps.fromUtilDateTime(MapPlainWraps.getUtilDate(attributes, ErrorAttributeConst.TIMESTAMP, UtilDateWraps.getCurrentDateTime()));
+        LocalDateTime timestamp = LocalDateWraps.ofUtilDateTime(MapPlainWraps.getUtilDate(attributes, ErrorAttributeConst.TIMESTAMP, UtilDateWraps.getCurrentDateTime()));
         result.put(html ? ResponseBodyConst.HTML_STATUS : ResponseBodyConst.REST_STATUS, status.value());
         if (html) {
             String reason = (status instanceof HttpStatus instance) ? instance.getReasonPhrase() : null;
@@ -143,7 +144,7 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
                 reasons = ValidationUtilsWraps.formatReasons(binding.getAllErrors());
             }
             PureTextStruct struct = new PureTextStruct(reasons);
-            rootMessage = struct.getCompositeTextOrdering(StringUtils.SPACE);
+            rootMessage = struct.getCompositeTextOrdering(CharVariantConst.SPACE);
         } else if (rootCause instanceof MaliciousAccessException) {
             rootMessage = MessageSourceWraps.getMessageLookup(super.messageSource, MiscMessageConst.MALICIOUS_ACCESS_LOG, null, rootCause.getMessage(), LocaleContextHolder.getLocale());
         } else {
