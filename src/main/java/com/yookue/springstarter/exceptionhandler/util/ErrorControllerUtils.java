@@ -26,6 +26,7 @@ import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.BindException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 import com.yookue.commonplexus.javaseutil.exception.LawProhibitedException;
 import com.yookue.commonplexus.javaseutil.exception.MaliciousAccessException;
 import com.yookue.commonplexus.javaseutil.exception.ServerBusyException;
@@ -59,6 +60,8 @@ public abstract class ErrorControllerUtils {
                 return HttpStatus.BAD_REQUEST;
             } else if (rootCause instanceof GeneralSecurityException || ClassUtilsWraps.isAssignableValue("org.springframework.security.core.AuthenticationException", rootCause)) {    // $NON-NLS-1$
                 return HttpStatus.FORBIDDEN;
+            } else if (rootCause instanceof NoResourceFoundException) {
+                return HttpStatus.NOT_FOUND;
             } else if (rootCause instanceof MaliciousAccessException) {
                 return HttpStatus.I_AM_A_TEAPOT;
             } else if (rootCause instanceof ServerBusyException || rootCause instanceof RateLimitedException) {
