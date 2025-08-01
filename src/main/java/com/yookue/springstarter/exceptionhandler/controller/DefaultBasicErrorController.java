@@ -41,6 +41,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
+import com.yookue.commonplexus.javaseutil.exception.BusinessValidationException;
 import com.yookue.commonplexus.javaseutil.exception.MaliciousAccessException;
 import com.yookue.commonplexus.javaseutil.structure.PureTextStruct;
 import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
@@ -129,7 +130,7 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
             result.put(ResponseBodyConst.HTML_PHRASE, phrase);
         }
         String rootMessage = null;
-        if (rootCause instanceof ValidationException) {
+        if (rootCause instanceof ValidationException || rootCause instanceof BusinessValidationException) {
             rootMessage = rootCause.getMessage();
         } else if (rootCause instanceof BindException) {
             BindingResult binding = ((BindException) rootCause).getBindingResult();

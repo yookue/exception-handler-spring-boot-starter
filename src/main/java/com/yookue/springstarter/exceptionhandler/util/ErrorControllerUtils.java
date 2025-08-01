@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import com.yookue.commonplexus.javaseutil.exception.BusinessValidationException;
 import com.yookue.commonplexus.javaseutil.exception.LawProhibitedException;
 import com.yookue.commonplexus.javaseutil.exception.MaliciousAccessException;
 import com.yookue.commonplexus.javaseutil.exception.ServerBusyException;
@@ -48,6 +49,7 @@ import com.yookue.springstarter.exceptionhandler.filter.FilterExceptionHandlerFi
  */
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted", "UnusedReturnValue"})
 public abstract class ErrorControllerUtils {
+    @SuppressWarnings("deprecation")
     public static HttpStatusCode determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause) {
         Throwable rootCause;
         if (cause == null) {
@@ -62,6 +64,8 @@ public abstract class ErrorControllerUtils {
                 return HttpStatus.FORBIDDEN;
             } else if (rootCause instanceof NoResourceFoundException) {
                 return HttpStatus.NOT_FOUND;
+            } else if (rootCause instanceof BusinessValidationException) {
+                return HttpStatus.METHOD_FAILURE;
             } else if (rootCause instanceof MaliciousAccessException) {
                 return HttpStatus.I_AM_A_TEAPOT;
             } else if (rootCause instanceof ServerBusyException || rootCause instanceof RateLimitedException) {
