@@ -49,7 +49,6 @@ import com.yookue.springstarter.exceptionhandler.filter.FilterExceptionHandlerFi
  */
 @SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted", "UnusedReturnValue"})
 public abstract class ErrorControllerUtils {
-    @SuppressWarnings("deprecation")
     public static HttpStatusCode determineErrorStatus(@Nonnull HttpServletRequest request, @Nullable HttpStatusCode status, @Nullable Throwable cause) {
         Throwable rootCause;
         if (cause == null) {
@@ -58,14 +57,12 @@ public abstract class ErrorControllerUtils {
             rootCause = NestedExceptionUtils.getMostSpecificCause(cause);
         }
         if (rootCause != null) {
-            if (rootCause instanceof BindException || rootCause instanceof ValidationException) {
+            if (rootCause instanceof BindException || rootCause instanceof ValidationException || rootCause instanceof BusinessValidationException) {
                 return HttpStatus.BAD_REQUEST;
             } else if (rootCause instanceof GeneralSecurityException || ClassUtilsWraps.isAssignableValue("org.springframework.security.core.AuthenticationException", rootCause)) {    // $NON-NLS-1$
                 return HttpStatus.FORBIDDEN;
             } else if (rootCause instanceof NoResourceFoundException) {
                 return HttpStatus.NOT_FOUND;
-            } else if (rootCause instanceof BusinessValidationException) {
-                return HttpStatus.METHOD_FAILURE;
             } else if (rootCause instanceof MaliciousAccessException) {
                 return HttpStatus.I_AM_A_TEAPOT;
             } else if (rootCause instanceof ServerBusyException || rootCause instanceof RateLimitedException) {
