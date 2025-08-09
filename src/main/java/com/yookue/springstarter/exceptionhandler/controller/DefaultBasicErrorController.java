@@ -24,7 +24,6 @@ import java.util.Map;
 import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowire;
@@ -41,11 +40,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
-import com.yookue.commonplexus.javaseutil.exception.BusinessValidationException;
 import com.yookue.commonplexus.javaseutil.exception.MaliciousAccessException;
 import com.yookue.commonplexus.javaseutil.structure.PureTextStruct;
-import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
 import com.yookue.commonplexus.javaseutil.util.JdkDateWraps;
+import com.yookue.commonplexus.javaseutil.util.LocalDateWraps;
 import com.yookue.commonplexus.javaseutil.util.MapPlainWraps;
 import com.yookue.commonplexus.springutil.constant.ErrorAttributeConst;
 import com.yookue.commonplexus.springutil.constant.MiscMessageConst;
@@ -129,10 +127,8 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
             String phrase = MessageSourceWraps.getMessageLookup(super.messageSource, "HttpStatus." + status.value(), null, reason, LocaleContextHolder.getLocale());    // $NON-NLS-1$
             result.put(ResponseBodyConst.HTML_PHRASE, phrase);
         }
-        String rootMessage = null;
-        if (rootCause instanceof ValidationException || rootCause instanceof BusinessValidationException) {
-            rootMessage = rootCause.getMessage();
-        } else if (rootCause instanceof BindException) {
+        String rootMessage;
+        if (rootCause instanceof BindException) {
             BindingResult binding = ((BindException) rootCause).getBindingResult();
             List<String> reasons;
             if (useLocalizedFieldName(request, status, rootCause, html)) {
@@ -151,6 +147,8 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
             if (status == HttpStatus.INTERNAL_SERVER_ERROR) {
                 String placeholder = options.isIncluded(ErrorAttributeOptions.Include.EXCEPTION) ? rootCause.getMessage() : null;
                 rootMessage = MessageSourceWraps.getMessageLookup(super.messageSource, MiscMessageConst.SERVER_ERROR_TRY, null, placeholder, LocaleContextHolder.getLocale());
+            } else {
+                rootMessage = rootCause.getMessage();
             }
         }
         if (StringUtils.isNotBlank(rootMessage)) {

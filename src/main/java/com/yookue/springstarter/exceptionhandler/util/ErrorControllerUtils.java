@@ -28,6 +28,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.validation.BindException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 import com.yookue.commonplexus.javaseutil.exception.BusinessValidationException;
+import com.yookue.commonplexus.javaseutil.exception.IgnorableException;
 import com.yookue.commonplexus.javaseutil.exception.LawProhibitedException;
 import com.yookue.commonplexus.javaseutil.exception.MaliciousAccessException;
 import com.yookue.commonplexus.javaseutil.exception.ServerBusyException;
@@ -57,7 +58,9 @@ public abstract class ErrorControllerUtils {
             rootCause = NestedExceptionUtils.getMostSpecificCause(cause);
         }
         if (rootCause != null) {
-            if (rootCause instanceof BindException || rootCause instanceof ValidationException || rootCause instanceof BusinessValidationException) {
+            if (rootCause instanceof IgnorableException) {
+                return HttpStatus.OK;
+            } else if (rootCause instanceof BindException || rootCause instanceof ValidationException || rootCause instanceof BusinessValidationException) {
                 return HttpStatus.BAD_REQUEST;
             } else if (rootCause instanceof GeneralSecurityException || ClassUtilsWraps.isAssignableValue("org.springframework.security.core.AuthenticationException", rootCause)) {    // $NON-NLS-1$
                 return HttpStatus.FORBIDDEN;
