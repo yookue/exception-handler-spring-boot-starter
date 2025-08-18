@@ -23,6 +23,7 @@ import jakarta.servlet.Servlet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -62,7 +63,7 @@ import com.yookue.springstarter.exceptionhandler.resolver.ThymeleafFilterExcepti
  * @see org.springframework.boot.web.servlet.support.ErrorPageFilter
  */
 @Configuration(proxyBeanMethods = false)
-@ConditionalOnProperty(prefix = ExceptionHandlerAutoConfiguration.PROPERTIES_PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@ConditionalOnBooleanProperty(prefix = ExceptionHandlerAutoConfiguration.PROPERTIES_PREFIX, name = "enabled", matchIfMissing = true)
 @ConditionalOnClass(value = {Servlet.class, DispatcherServlet.class})
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @AutoConfigureOrder(value = Ordered.LOWEST_PRECEDENCE - 10)
@@ -80,7 +81,7 @@ public class ExceptionHandlerAutoConfiguration {
     @Order(value = 1)
     static class Resolver {
         @Bean(name = EXCEPTION_RESOLVER)
-        @ConditionalOnProperty(prefix = "spring.thymeleaf", name = "enabled", havingValue = "true", matchIfMissing = true)
+        @ConditionalOnBooleanProperty(prefix = "spring.thymeleaf", name = "enabled", matchIfMissing = true)
         @ConditionalOnClass(name = "org.thymeleaf.Thymeleaf")
         @ConditionalOnBean(value = ThymeleafViewResolver.class)
         @ConditionalOnMissingBean(name = EXCEPTION_RESOLVER)
@@ -91,7 +92,7 @@ public class ExceptionHandlerAutoConfiguration {
         }
 
         @Bean(name = EXCEPTION_RESOLVER)
-        @ConditionalOnProperty(prefix = "spring.freemarker", name = "enabled", havingValue = "true", matchIfMissing = true)
+        @ConditionalOnBooleanProperty(prefix = "spring.freemarker", name = "enabled", matchIfMissing = true)
         @ConditionalOnClass(name = "freemarker.template.Template")
         @ConditionalOnBean(value = FreeMarkerViewResolver.class)
         @ConditionalOnMissingBean(name = EXCEPTION_RESOLVER)
@@ -102,7 +103,7 @@ public class ExceptionHandlerAutoConfiguration {
         }
 
         @Bean(name = EXCEPTION_RESOLVER)
-        @ConditionalOnProperty(prefix = "spring.groovy.template", name = "enabled", havingValue = "true", matchIfMissing = true)
+        @ConditionalOnBooleanProperty(prefix = "spring.groovy.template", name = "enabled", matchIfMissing = true)
         @ConditionalOnClass(name = {"groovy.text.Template", "org.codehaus.groovy.tools.GroovyClass"})
         @ConditionalOnBean(value = GroovyMarkupViewResolver.class)
         @ConditionalOnMissingBean(name = EXCEPTION_RESOLVER)
@@ -113,7 +114,7 @@ public class ExceptionHandlerAutoConfiguration {
         }
 
         @Bean(name = EXCEPTION_RESOLVER)
-        @ConditionalOnProperty(prefix = "spring.mustache", name = "enabled", havingValue = "true", matchIfMissing = true)
+        @ConditionalOnBooleanProperty(prefix = "spring.mustache", name = "enabled", matchIfMissing = true)
         @ConditionalOnClass(name = "com.samskivert.mustache.Template")
         @ConditionalOnBean(value = MustacheViewResolver.class)
         @ConditionalOnMissingBean(name = EXCEPTION_RESOLVER)
@@ -155,7 +156,7 @@ public class ExceptionHandlerAutoConfiguration {
     @Order(value = 3)
     static class Listener {
         @Bean
-        @ConditionalOnProperty(prefix = PROPERTIES_PREFIX + ".event-listener", name = "handle-event-multicaster", havingValue = "true", matchIfMissing = true)
+        @ConditionalOnBooleanProperty(prefix = PROPERTIES_PREFIX + ".event-listener", name = "handle-event-multicaster", matchIfMissing = true)
         @ConditionalOnMissingBean
         public SimpleEventMulticasterProcessor simpleEventMulticasterProcessor(@Nonnull ExceptionHandlerProperties properties) {
             SimpleEventMulticasterProcessor result = new SimpleEventMulticasterProcessor();

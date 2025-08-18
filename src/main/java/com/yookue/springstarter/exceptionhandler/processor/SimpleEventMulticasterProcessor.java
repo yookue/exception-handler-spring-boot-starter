@@ -25,9 +25,9 @@ import org.springframework.core.Ordered;
 import org.springframework.util.ErrorHandler;
 import com.yookue.commonplexus.javaseutil.constant.LogMessageConst;
 import com.yookue.commonplexus.springutil.util.ReflectionUtilsWraps;
+import lombok.extern.slf4j.Slf4j;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -46,7 +46,7 @@ public class SimpleEventMulticasterProcessor implements BeanPostProcessor, Order
     @Override
     public Object postProcessAfterInitialization(@Nonnull Object bean, @Nonnull String beanName) throws BeansException {
         if (bean instanceof SimpleApplicationEventMulticaster instance) {
-            Object handler = ReflectionUtilsWraps.getField(SimpleApplicationEventMulticaster.class, "errorHandler", true, instance);    // $NON-NLS-1$
+            Object handler = ReflectionUtilsWraps.getField(instance, "errorHandler", true);    // $NON-NLS-1$
             if (handler == null) {
                 instance.setErrorHandler(errorHandler);
             }
