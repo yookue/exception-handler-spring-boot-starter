@@ -68,6 +68,8 @@ public class SimpleErrorControllerRegistrar implements ImportAware {
         Assert.hasText(viewName, AssertMessageConst.HAS_TEXT);
         SimpleBasicErrorController result = new SimpleBasicErrorController(errors, properties, viewName, useLocalizedFieldName);
         result.setPublishEvent(attributes.getBoolean("publishEvent"));    // $NON-NLS-1$
+        result.setLogRootCause(attributes.getBoolean("logRootCause"));    // $NON-NLS-1$
+        result.setLogRootStackTrace(attributes.getBoolean("logRootStackTrace"));    // $NON-NLS-1$
         return result;
     }
 }

@@ -45,6 +45,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.ModelAndView;
 import com.yookue.commonplexus.javaseutil.constant.StringVariantConst;
+import com.yookue.commonplexus.javaseutil.util.ExceptionUtilsWraps;
 import com.yookue.commonplexus.javaseutil.util.MapPlainWraps;
 import com.yookue.commonplexus.javaseutil.util.StringUtilsWraps;
 import com.yookue.commonplexus.springutil.constant.ErrorAttributeCombo;
@@ -57,8 +58,8 @@ import com.yookue.commonplexus.springutil.util.WebUtilsWraps;
 import com.yookue.springstarter.exceptionhandler.event.ServletExceptionHandledEvent;
 import com.yookue.springstarter.exceptionhandler.filter.FilterExceptionHandlerFilter;
 import com.yookue.springstarter.exceptionhandler.util.ErrorControllerUtils;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import lombok.Setter;
 
 
 /**
@@ -82,6 +83,8 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
     private static final String THYMELEAF_PROPERTIES = "spring.thymeleaf.servlet.produce-partial-output-while-processing";    // $NON-NLS-1$
 
     protected boolean publishEvent = true;
+    protected boolean logRootCause = true;
+    protected boolean logRootStackTrace = false;
     protected ApplicationEventPublisher applicationEventPublisher;
     protected Environment environment;
     protected MessageSource messageSource;
@@ -235,6 +238,12 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
                 reason = (httpStatus instanceof HttpStatus instance) ? instance.getReasonPhrase() : null;
             }
             log.error("Error {} path '{}', status {}, reason: {}", request.getMethod(), path, httpStatus.value(), reason);
+            if (logRootCause) {
+                log.error("Root cause: {}", ExceptionUtilsWraps.getRootCauseMessage(cause));
+            }
+            if (logRootStackTrace) {
+                log.error("Root stack trace: {}", ExceptionUtilsWraps.getRootCauseStackTrace(cause));
+            }
         }
     }
 }

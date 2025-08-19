@@ -63,4 +63,18 @@ public @interface EnableSimpleErrorController {
      * @return whether to publish a {@link com.yookue.springstarter.exceptionhandler.event.ServletExceptionHandledEvent} on exception or not
      */
     boolean publishEvent() default true;
+
+    /**
+     * Returns whether to log root cause or not
+     *
+     * @return whether to log root cause or not
+     */
+    boolean logRootCause() default true;
+
+    /**
+     * Returns whether to log root stack trace or not
+     *
+     * @return whether to log root stack trace or not
+     */
+    boolean logRootStackTrace() default false;
 }
