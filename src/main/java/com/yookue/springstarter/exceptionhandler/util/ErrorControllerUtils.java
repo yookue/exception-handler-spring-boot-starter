@@ -36,7 +36,6 @@ import com.yookue.commonplexus.javaseutil.exception.ServerMaintenanceException;
 import com.yookue.commonplexus.javaseutil.exception.ServiceConfigException;
 import com.yookue.commonplexus.javaseutil.exception.ServiceUnavailableException;
 import com.yookue.commonplexus.javaseutil.exception.ServiceVersionException;
-import com.yookue.commonplexus.springutil.exception.RateLimitedException;
 import com.yookue.commonplexus.springutil.util.ClassUtilsWraps;
 import com.yookue.commonplexus.springutil.util.ErrorControllerWraps;
 import com.yookue.commonplexus.springutil.util.WebUtilsWraps;
@@ -68,7 +67,7 @@ public abstract class ErrorControllerUtils {
                 return HttpStatus.NOT_FOUND;
             } else if (rootCause instanceof MaliciousAccessException) {
                 return HttpStatus.I_AM_A_TEAPOT;
-            } else if (rootCause instanceof ServerBusyException || rootCause instanceof RateLimitedException) {
+            } else if (rootCause instanceof ServerBusyException || ClassUtilsWraps.isAssignableValue("com.yookue.springstarter.ratelimiter.exception.RateLimitedException", rootCause)) {
                 return HttpStatus.TOO_MANY_REQUESTS;
             } else if (rootCause instanceof LawProhibitedException) {
                 return HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS;
