@@ -44,6 +44,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ClassUtils;
 import org.springframework.web.servlet.ModelAndView;
+import com.yookue.commonplexus.javaseutil.constant.LogMessageConst;
 import com.yookue.commonplexus.javaseutil.constant.StringVariantConst;
 import com.yookue.commonplexus.javaseutil.util.ExceptionUtilsWraps;
 import com.yookue.commonplexus.javaseutil.util.MapPlainWraps;
@@ -83,8 +84,8 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
     private static final String THYMELEAF_PROPERTIES = "spring.thymeleaf.servlet.produce-partial-output-while-processing";    // $NON-NLS-1$
 
     protected boolean publishEvent = true;
-    protected boolean logRootCause = true;
-    protected boolean logRootStackTrace = false;
+    protected boolean logRootCause = false;
+    protected boolean logRootStackTrace = true;
     protected ApplicationEventPublisher applicationEventPublisher;
     protected Environment environment;
     protected MessageSource messageSource;
@@ -162,11 +163,11 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
      * @return the determined {@link java.lang.Throwable} of the given request
      */
     protected Throwable determineErrorCause(@Nonnull HttpServletRequest request) {
-        Throwable result = WebUtilsWraps.getRequestAttributeAs(request, FilterExceptionHandlerFilter.THROWABLE_ATTRIBUTE, Throwable.class);
-        if (result == null) {
-            result = ErrorControllerWraps.getErrorCause(this, request);
+        Throwable cause = WebUtilsWraps.getRequestAttributeAs(request, FilterExceptionHandlerFilter.THROWABLE_ATTRIBUTE, Throwable.class);
+        if (cause == null) {
+            cause = ErrorControllerWraps.getErrorCause(this, request);
         }
-        return result;
+        return ExceptionUtilsWraps.getRootCause(cause);
     }
 
     /**
@@ -239,10 +240,10 @@ public abstract class AbstractBasicErrorController extends BasicErrorController 
             }
             log.error("Error {} path '{}', status {}, reason: {}", request.getMethod(), path, httpStatus.value(), reason);
             if (logRootCause) {
-                log.error("Root cause: {}", ExceptionUtilsWraps.getRootCauseMessage(cause));
+                log.error(LogMessageConst.EXCEPTION_OCCURRED_REASON, ExceptionUtilsWraps.getRootCauseMessage(cause));
             }
             if (logRootStackTrace) {
-                log.error("Root stack trace: {}", ExceptionUtilsWraps.getRootCauseStackTrace(cause));
+                log.error(LogMessageConst.EXCEPTION_OCCURRED, cause);
             }
         }
     }

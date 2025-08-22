@@ -69,12 +69,12 @@ public @interface EnableSimpleErrorController {
      *
      * @return whether to log root cause or not
      */
-    boolean logRootCause() default true;
+    boolean logRootCause() default false;
 
     /**
      * Returns whether to log root stack trace or not
      *
      * @return whether to log root stack trace or not
      */
-    boolean logRootStackTrace() default false;
+    boolean logRootStackTrace() default true;
 }
