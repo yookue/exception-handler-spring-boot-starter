@@ -94,6 +94,7 @@ public abstract class AbstractFilterExceptionResolver extends AbstractHandlerExc
     @Override
     protected ModelAndView doResolveException(@Nonnull HttpServletRequest request, @Nonnull HttpServletResponse response, @Nullable Object handler, @Nonnull Exception cause) {
         initInterceptorBeans();
+        boolean isRestRequest = WebUtilsWraps.isRestRequest(request);
         boolean shouldIntercept = !CollectionUtils.isEmpty(interceptorBeans) && handler != null;
         if (shouldIntercept) {
             MapPlainWraps.forEach(interceptorBeans, (key, value) -> {
@@ -108,7 +109,7 @@ public abstract class AbstractFilterExceptionResolver extends AbstractHandlerExc
                 }
             });
         }
-        if (WebUtilsWraps.isRestRequest(request)) {
+        if (isRestRequest) {
             ResponseEntity<?> entity = getErrorController().error(request);
             if (shouldIntercept && !interceptedBeans.isEmpty()) {
                 MapPlainWraps.reverseForEach(interceptorBeans, (key, value) -> {
@@ -148,8 +149,10 @@ public abstract class AbstractFilterExceptionResolver extends AbstractHandlerExc
                 }
             }, (key, value) -> interceptedBeans.contains(key));
         }
-        HttpStatusCode status = determineErrorStatus(request, null, cause);
-        response.setStatus(status.value());
+        if (isRestRequest) {
+            HttpStatusCode status = determineErrorStatus(request, null, cause);
+            response.setStatus(status.value());
+        }
         return null;
     }
 

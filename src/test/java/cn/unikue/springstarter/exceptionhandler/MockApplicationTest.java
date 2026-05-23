@@ -43,7 +43,6 @@ import lombok.extern.slf4j.Slf4j;
 @AutoConfigureMockMvc
 @TestInstance(value = TestInstance.Lifecycle.PER_CLASS)
 @Slf4j
-@SuppressWarnings("unused")
 abstract class MockApplicationTest {
     @Autowired
     private MockMvc mockMvc;
