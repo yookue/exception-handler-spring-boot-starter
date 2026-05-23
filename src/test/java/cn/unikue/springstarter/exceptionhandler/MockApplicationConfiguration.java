@@ -24,10 +24,6 @@ import org.springframework.context.annotation.Bean;
 import cn.unikue.springstarter.exceptionhandler.annotation.EnableSimpleErrorController;
 
 
-/**
- * @see org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration
- * @see org.springframework.boot.autoconfigure.gson.GsonAutoConfiguration
- */
 @TestConfiguration(proxyBeanMethods = false)
 @EnableSimpleErrorController(viewName = "mock-error")
 class MockApplicationConfiguration {
