@@ -53,8 +53,8 @@ import cn.unikue.commonplexus.springutil.util.WebUtilsWraps;
 import cn.unikue.springstarter.exceptionhandler.facade.ErrorControllerCustomizer;
 import cn.unikue.springstarter.exceptionhandler.property.ExceptionHandlerProperties;
 import cn.unikue.springstarter.exceptionhandler.util.ErrorControllerUtils;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import lombok.Setter;
 
 
 /**
@@ -148,7 +148,9 @@ public abstract class AbstractFilterExceptionResolver extends AbstractHandlerExc
                 }
             }, (key, value) -> interceptedBeans.contains(key));
         }
-        return new ModelAndView();
+        HttpStatusCode status = determineErrorStatus(request, null, cause);
+        response.setStatus(status.value());
+        return null;
     }
 
     @Nonnull

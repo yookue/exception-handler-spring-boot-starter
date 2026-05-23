@@ -41,7 +41,7 @@ import org.springframework.http.MediaType;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import cn.unikue.commonplexus.javaseutil.exception.MaliciousAccessException;
-import cn.unikue.commonplexus.javaseutil.structure.PureTextStruct;
+import cn.unikue.commonplexus.javaseutil.structure.TextStampStruct;
 import cn.unikue.commonplexus.javaseutil.util.JdkDateWraps;
 import cn.unikue.commonplexus.javaseutil.util.LocalDateWraps;
 import cn.unikue.commonplexus.javaseutil.util.MapPlainWraps;
@@ -139,7 +139,7 @@ public class DefaultBasicErrorController extends AbstractBasicErrorController {
             } else {
                 reasons = ValidationUtilsWraps.formatReasons(binding.getAllErrors());
             }
-            PureTextStruct struct = new PureTextStruct(reasons);
+            TextStampStruct struct = new TextStampStruct(reasons);
             rootMessage = struct.getCompositeTextOrdering(StringUtils.SPACE);
         } else if (rootCause instanceof MaliciousAccessException) {
             rootMessage = MessageSourceWraps.getMessageLookup(super.messageSource, MiscMessageConst.MALICIOUS_ACCESS_LOG, null, rootCause.getMessage(), LocaleContextHolder.getLocale());
