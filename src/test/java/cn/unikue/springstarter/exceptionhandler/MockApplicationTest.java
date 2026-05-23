@@ -58,6 +58,7 @@ abstract class MockApplicationTest {
     }
 
     @Test
+    @SuppressWarnings("LoggingSimilarMessage")
     void error418() throws Exception {
         String methodName = StackTraceWraps.getExecutingMethodName();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get(URI.create("/mock-418"));    // $NON-NLS-1$
@@ -68,6 +69,7 @@ abstract class MockApplicationTest {
     }
 
     @Test
+    @SuppressWarnings("LoggingSimilarMessage")
     void error500() throws Exception {
         String methodName = StackTraceWraps.getExecutingMethodName();
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post(URI.create("/mock-500")).header(HttpHeaderConst.X_REQUESTED_WITH, HttpHeaderConst.XML_HTTP_REQUEST);    // $NON-NLS-1$
