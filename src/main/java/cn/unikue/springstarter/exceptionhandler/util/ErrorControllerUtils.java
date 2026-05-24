@@ -67,7 +67,7 @@ public abstract class ErrorControllerUtils {
                 return HttpStatus.NOT_FOUND;
             } else if (rootCause instanceof MaliciousAccessException) {
                 return HttpStatus.I_AM_A_TEAPOT;
-            } else if (rootCause instanceof ServerBusyException || ClassUtilsWraps.isAssignableValue("cn.unikue.springstarter.ratelimiter.exception.RateLimitedException", rootCause)) {
+            } else if (rootCause instanceof ServerBusyException || ClassUtilsWraps.isAssignableValue("cn.unikue.springstarter.ratelimiter.exception.RateLimitedException", rootCause)) {    // $NON-NLS-1$
                 return HttpStatus.TOO_MANY_REQUESTS;
             } else if (rootCause instanceof LawProhibitedException) {
                 return HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS;
@@ -77,6 +77,8 @@ public abstract class ErrorControllerUtils {
                 return HttpStatus.HTTP_VERSION_NOT_SUPPORTED;
             } else if (rootCause instanceof ServiceConfigException) {
                 return HttpStatus.VARIANT_ALSO_NEGOTIATES;
+            } else if (ClassUtilsWraps.isAssignableValue("cn.unikue.springstarter.licensevalidator.exception.AbstractLicenseValidatorException", rootCause) || ClassUtilsWraps.isAssignableValue("global.namespace.truelicense.api.LicenseManagementException", rootCause)) {    // $NON-NLS-1$ // $NON-NLS-2$
+                return HttpStatus.PAYMENT_REQUIRED;
             }
         }
         return (status != null) ? status : ErrorControllerWraps.getErrorStatus(request);
